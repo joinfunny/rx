@@ -126,19 +126,19 @@ gulp.task('copy:html', function () {
 gulp.task('watch:html',function(){
     return gulp.src(opts.srcDir+'/**/*.html')
     .pipe(gulp.dest(opts.buildDir));
-})
+});
 
 gulp.task("clean", function () {
     return gulp.src(opts.buildDir)
         .pipe(clean({
             read: false
         }));
-})
+});
 
 
-//压缩JS
-gulp.task("webpack-p", shell.task(['webpack -p --progress --colors']));
-//不压缩JS
+//压缩JS--生产环境应用
+gulp.task("webpack-p", shell.task(['set NODE_ENV=production&&webpack -p --progress --colors']));
+//不压缩JS--测试环境应用
 gulp.task("webpack-u", shell.task(['webpack --progress --colors']));
 
 gulp.task("webpack-w", shell.task(['webpack --display-error-details --progress --colors --watch']));
@@ -147,10 +147,23 @@ gulp.task("webpack-dev-server", shell.task(['webpack-dev-server --hot --inline -
 
 gulp.task('default', ['webpack-dev-server', 'sassfile', 'watchsass']);
 
-gulp.task('build', gulpSequence(
+/**
+ * 压缩构建
+ */
+gulp.task('build-pro', gulpSequence(
+    'clean',
+    'lib',
+    'sassfile', ['copy:css','copy:fonts', 'copy:img', 'copy:js', 'copy:html'],
+    'webpack-p'    
+));
+
+/**
+ * 不压缩构建
+ */
+gulp.task('build-dev', gulpSequence(
     'clean',
     'lib',
     'sassfile', ['copy:css','copy:fonts', 'copy:img', 'copy:js', 'copy:html'],
     'webpack-u',
-    'webpack-dev-server'
+    'webpack-dev-server' //此命令式用来本地调试JS的静态服务器
 ));

@@ -4,6 +4,9 @@ var path = require('path');
 var fs = require('fs');
 var webpack = require('webpack');
 var srcDir = './public/src';
+
+var isProd= process.env.NODE_ENV === 'production' ? true : false;
+
 function getEntry() {
     var jsPath = path.resolve(srcDir, 'js/entrys');
     var dirs = fs.readdirSync(jsPath);
@@ -11,11 +14,16 @@ function getEntry() {
     dirs.forEach(function (item) {
         matchs = item.match(/(.+)\.js$/);
         if (matchs) {
-            files[matchs[1]] =[
-                "webpack-dev-server/client?http://127.0.0.1:3000",
-                "webpack/hot/only-dev-server",
-                path.resolve(srcDir, 'js/entrys', item)
-            ] ;
+            //生产环境不加载hotloader
+            if(isProd){
+                files[matchs[1]] = path.resolve(srcDir, 'js/entrys', item);
+            }else{
+                files[matchs[1]] = [
+                    "webpack-dev-server/client?http://127.0.0.1:3000",
+                    "webpack/hot/only-dev-server",
+                    path.resolve(srcDir, 'js/entrys', item)
+                ];
+            }
         }
     });
     /*files['hotServer']= [

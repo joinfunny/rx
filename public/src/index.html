@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>RX Stream</title>
@@ -7,10 +8,49 @@
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/font-awesome.min.css" />
     <script src="libs/lib.js"></script>
+    <script>
+        (function (para) {
+            var sdkUrl = para.sdkUrl,
+                sdkName = para.name,
+                win = this,
+                doc = win.document,
+                x = null,
+                y = null;
+            win['RXSTREAM201607'] = sdkName;
+            win[sdkName] = win[sdkName] || function (a) {
+                return function () {
+                    (win[sdkName]._rx = win[sdkName]._rx || []).push([a, arguments]);
+                }
+            };
+
+            var openFuncs = ['track', 'trackSignup', 'userIdentify'];
+            for (var i = 0; i < openFuncs.length; i++) {
+                win[sdkName][openFuncs[i]] = win[sdkName].call(null, openFuncs[i]);
+            }
+
+            if (!win[sdkName].lt) {
+                x = doc.createElement('script'), y = doc.getElementsByTagName('script')[0];
+                x.async = true;
+                x.src = sdkUrl;
+                y.parentNode.insertBefore(x, y);
+                win[sdkName].lt = 1 * new Date();
+                win[sdkName].para = para;
+            }
+        })({
+            sdkUrl: 'http://wx.jianfeng100.com/js/sdk/rxStream-wx.js',
+            sendLimit: 1, 
+            showLog: false, 
+            name: 'rxStream', 
+            autoTrack: true, 
+            apiHost: 'http://streamcollector.cssrv.dataengine.com', 
+            appId: 49
+        });
+    </script>
 </head>
 
 <body>
     <div id="app"></div>
     <script src="js/index.bundle.js"></script>
 </body>
+
 </html>
