@@ -36,7 +36,7 @@ module.exports = {
     //入口文件输出配置
     output: {
         //打包文件存放的绝对路径
-        path: __dirname + '/public/dist/',
+        path: __dirname + '/public/dist/js/',
         //打包后的文件名
         filename: "[name].bundle.js",
         //publicPath:'/js/'

@@ -106,6 +106,18 @@ gulp.task('copy:css', function () {
         .pipe(gulp.dest(opts.buildDir + '/css'));
 });
 
+gulp.task('copy:fonts', function () {
+    return gulp.src([
+            opts.srcDir + '/fonts/**/*.otf',
+            opts.srcDir + '/fonts/**/*.eot',
+            opts.srcDir + '/fonts/**/*.svg',
+            opts.srcDir + '/fonts/**/*.ttf',
+            opts.srcDir + '/fonts/**/*.woff',
+            opts.srcDir + '/fonts/**/*.woff2',
+        ])
+        .pipe(gulp.dest(opts.buildDir + '/fonts'));
+});
+
 gulp.task('copy:html', function () {
     return gulp.src(opts.srcDir + '/**/*.html')
         .pipe(gulp.dest(opts.buildDir));
@@ -138,7 +150,7 @@ gulp.task('default', ['webpack-dev-server', 'sassfile', 'watchsass']);
 gulp.task('build', gulpSequence(
     'clean',
     'lib',
-    'sassfile', ['copy:css', 'copy:img', 'copy:js', 'copy:html'],
+    'sassfile', ['copy:css','copy:fonts', 'copy:img', 'copy:js', 'copy:html'],
     'webpack-u',
     'webpack-dev-server'
 ));
