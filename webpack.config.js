@@ -15,15 +15,15 @@ function getEntry() {
         matchs = item.match(/(.+)\.js$/);
         if (matchs) {
             //生产环境不加载hotloader
-            if(isProd){
-                files[matchs[1]] = path.resolve(srcDir, 'js/entrys', item);
-            }else{
+            //if(isProd){
+            //    files[matchs[1]] = path.resolve(srcDir, 'js/entrys', item);
+            //}else{
                 files[matchs[1]] = [
                     "webpack-dev-server/client?http://127.0.0.1:3000",
                     "webpack/hot/only-dev-server",
                     path.resolve(srcDir, 'js/entrys', item)
                 ];
-            }
+            //}
         }
     });
     /*files['hotServer']= [
@@ -37,6 +37,14 @@ console.log(getEntry());
 var commonsPlugin = new webpack
     .optimize
     .CommonsChunkPlugin('common.js');
+var plugins =[];
+
+if (isProd) {
+    plugins.push(new webpack.DefinePlugin({__DEV__: JSON.stringify(JSON.parse(process.env.DEBUG || 'false'))}));
+    plugins.push(new webpack.optimize.UglifyJsPlugin({compress: {warnings: false}}));
+}
+plugins.push(new webpack.HotModuleReplacementPlugin());
+plugins.push(new webpack.NoErrorsPlugin());
 
 module.exports = {
     //插件项 plugins: [commonsPlugin], 页面入口文件配置
@@ -79,8 +87,5 @@ module.exports = {
     resolve: {
         extensions: ['', '.js', '.jsx']
     },
-    plugins: [
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoErrorsPlugin()
-    ]
+    plugins: plugins
 };
